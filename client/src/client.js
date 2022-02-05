@@ -1,13 +1,13 @@
 const log = (text) => {
     const parent = document.querySelector("#events");
     const el = document.createElement("li");
-    el.innerHTML = `<i><small>${(new Date()).toJSON()}</small><i> <br/> ${text}`;
+    el.innerHTML = `<i><small>${new Date().toJSON()}</small><i> <br/> ${text}`;
 
     parent.appendChild(el);
     parent.scrollTop = parent.scrollHeight;
 };
 
-const onChatSubmitted = (event) => {
+const onChatSubmitted = (socket) => (event) => {
     event.preventDefault();
 
     const input = document.querySelector("#chat");
@@ -17,13 +17,18 @@ const onChatSubmitted = (event) => {
 
     input.value = "";
 
-    log(text);
+    socket.emit("message", text);
 };
 
 (() => {
     log("welcome");
- 
-    document
-        .querySelector("#chat-form")
-        .addEventListener("submit", onChatSubmitted);
+
+    const sock = io();
+    sock.on("message", (text) => {
+        log(text);
+    });
+
+    document.querySelector("#chat-form").addEventListener("submit", (event) => {
+        onChatSubmitted(sock)(event);
+    });
 })();
