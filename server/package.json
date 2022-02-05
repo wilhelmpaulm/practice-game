@@ -1,0 +1,26 @@
+{
+  "name": "practice-game",
+  "version": "1.0.0",
+  "description": "- this is based on @Juriy 's tutorial at https://www.youtube.com/watch?v=NvkM1immvWo&t=701s \r - repo: https://github.com/Juriy/game-demo/tree/rec\r - the purpose of this practice is to take a youtube tutorial and slowly modify and scale it from scratch\r   - basically try to unnecessarily scale it",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon --watch server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wilhelmpaulm/practice-game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wilhelmpaulm/practice-game/issues"
+  },
+  "homepage": "https://github.com/wilhelmpaulm/practice-game#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
