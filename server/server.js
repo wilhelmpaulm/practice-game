@@ -8,12 +8,20 @@ app.use(express.static(`${__dirname}/../client`));
 
 const server = http.createServer(app);
 const io = socketio(server);
+let turns = [];
 
 io.on("connection", (socket) => {
-    socket.emit("message", "you are connected");
+    socket.emit("message", "you have joined the game");
+    socket.emit("joined", turns);
 
     socket.on("message", (text) => {
         io.emit("message", text);
+    });
+
+    socket.on("turn", ({x, y}) => {
+        turns = [...turns, {x, y}];
+        io.emit("message", `a turn has been made x:${x} y:${y}`);
+        io.emit("turn", {x, y});
     });
 });
 
