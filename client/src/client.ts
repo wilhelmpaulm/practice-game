@@ -57,13 +57,13 @@ const getClickCoordinates = (element: HTMLElement, event: MouseEvent) => {
         log(text);
     });
 
-    sock.on("turn", ({ x, y }) => {
-        fillRect(x, y);
+    sock.on("turn", ({ x, y, color }) => {
+        fillRect(x, y, color);
     });
 
     sock.on("joined", (turns = []) => {
-        for (let { x, y } of turns) {
-            fillRect(x, y);
+        for (let { x, y, color } of turns) {
+            fillRect(x, y, color);
         }
     });
 

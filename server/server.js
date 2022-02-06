@@ -1,6 +1,7 @@
 const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
+const randomColor = require("randomcolor");
 
 const app = express();
 
@@ -11,6 +12,8 @@ const io = socketio(server);
 let turns = [];
 
 io.on("connection", (socket) => {
+    const color = randomColor();
+
     socket.emit("message", "you have joined the game");
     socket.emit("joined", turns);
 
@@ -18,10 +21,12 @@ io.on("connection", (socket) => {
         io.emit("message", text);
     });
 
-    socket.on("turn", ({x, y}) => {
-        turns = [...turns, {x, y}];
-        io.emit("message", `a turn has been made x:${x} y:${y}`);
-        io.emit("turn", {x, y});
+    socket.on("turn", ({ x, y}) => {
+        // add turn to history
+        turns = [...turns, { x, y, color }];
+
+        io.emit("message", `player ${color} turn has been made x:${x} y:${y}`);
+        io.emit("turn", { x, y, color });
     });
 });
 
