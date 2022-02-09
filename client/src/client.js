@@ -38,17 +38,25 @@ const getBoard = (canvas, numCells = 5) => {
     const clear = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-    const reset = () => {
-        clear();
-        drawGrid();
-    };
     const getCellCoordinates = (x, y) => {
         return {
             x: Math.floor(x / cellSize),
             y: Math.floor(y / cellSize),
         };
     };
-    return { fillCell, reset, getCellCoordinates };
+    const renderBoard = (serverBoard = []) => {
+        serverBoard.forEach((row, y) => {
+            row.forEach((color, x) => {
+                color && fillCell(x, y, color);
+            });
+        });
+    };
+    const reset = (serverBoard) => {
+        clear();
+        drawGrid();
+        renderBoard(serverBoard);
+    };
+    return { fillCell, reset, getCellCoordinates, renderBoard };
 };
 const getClickCoordinates = (element, event) => {
     const { top, left } = element.getBoundingClientRect();
@@ -64,22 +72,24 @@ const getClickCoordinates = (element, event) => {
     const canvas = document.querySelector("#canvas");
     const chatForm = document.querySelector("#chat-form");
     const { fillCell, reset, getCellCoordinates } = getBoard(canvas);
-    reset(); // draw the squares on the canvas
     const onCanvasClick = (event) => {
         const { x, y } = getClickCoordinates(canvas, event);
         sock.emit("turn", getCellCoordinates(x, y));
     };
+    sock.on("board", (serverBoard) => {
+        reset(serverBoard); // draw the squares on the canvas
+    });
     sock.on("message", (text) => {
         log(text);
     });
     sock.on("turn", ({ x, y, color }) => {
         fillCell(x, y, color);
     });
-    sock.on("joined", (turns = []) => {
-        for (let { x, y, color } of turns) {
-            fillCell(x, y, color);
-        }
-    });
+    // sock.on("joined", (turns = []) => {
+    //     for (let { x, y, color } of turns) {
+    //         fillCell(x, y, color);
+    //     }
+    // });
     chatForm.addEventListener("submit", (event) => {
         onChatSubmitted(sock)(event);
     });
